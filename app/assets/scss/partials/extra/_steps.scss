@@ -1,0 +1,64 @@
+// steps common
+
+.steps {
+  @apply flex items-baseline;
+}
+
+// step direction
+
+.step {
+  @apply flex flex-col flex-1;
+}
+
+// steps size
+
+.step-sm {
+  @apply w-5 h-5;
+}
+
+
+
+
+
+/*
+
+circle color + line color
+
+*/
+
+
+
+
+
+
+// steps with line
+
+.steps-with-linespace .step {
+  @apply overflow-hidden;
+}
+
+// vertical steps
+.steps-vertical {
+  @apply flex-col;
+}
+
+.steps-vertical .step {
+  @apply flex-row space-x-5 min-h-[80px];
+}
+
+.step-vertical {
+  @apply flex flex-col items-center;
+}
+
+.vertical-steps li {
+  @apply min-h-[72px];
+}
+
+// vertical steps with line space
+
+.veticalsteps-line-space .step-vertical {
+  @apply space-y-1;
+}
+
+// steps with action
+

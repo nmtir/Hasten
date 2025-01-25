@@ -1,0 +1,42 @@
+.tm-wrapper li {
+  @apply relative pb-10;
+}
+
+// dot
+
+// timeline with line space
+
+// Timeline With Ping
+
+
+// timeline left positioned
+
+.tm-wrapper.tm-left li {
+  @apply md:pr-5;
+}
+
+// alternate timeline
+
+.tm-wrapper.tm-alternate li {
+  @apply md:w-1/2;
+}
+
+.tm-alternate li:nth-child(odd) {
+  @apply md:ml-auto;
+}
+
+// reverse alternate timeline
+
+.tm-wrapper.tm-alternate-reverse li {
+  @apply md:w-1/2;
+}
+
+.tm-alternate-reverse li:nth-child(even) {
+  @apply md:ml-auto;
+}
+
+// timeline opposite content
+
+// timeline with dot icon
+// timeline with card
+

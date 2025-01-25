@@ -1,0 +1,63 @@
+.hasten-calendar {
+  .fc-toolbar-chunk button {
+    @apply h-9;
+
+  }
+
+  .fc-theme-standard td,
+  .fc-theme-standard th {
+    @apply border-default-100 dark:border-default-200;
+  }
+
+  // event css
+
+  .fc .fc-list-sticky .fc-list-day > * {
+    @apply bg-default-50;
+  }
+
+  @media (max-width: 981px) {
+
+  }
+
+  .fc .fc-list-event:hover td {
+    @apply bg-inherit;
+  }
+
+}
+
+.hasten-calendar {
+  .primary {
+    @apply border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .secondary {
+    @apply bg-secondary border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .danger {
+    @apply bg-destructive border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .destructive {
+    @apply bg-destructive border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .info {
+    @apply bg-info border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .warning {
+    @apply bg-warning border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .success {
+    @apply bg-success border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+  .dark {
+    @apply bg-card-foreground border-none text-primary-foreground text-center px-2 font-medium text-sm;
+  }
+
+}
+
+// date picker

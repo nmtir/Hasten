@@ -1,0 +1,13 @@
+.hasten-app .react-select {
+  .react-select.is-invalid {
+  }
+
+  .react-select__control .select__indicator svg {
+    @apply cursor-pointer text-default-600;
+  }
+
+  .has-error .react-select__control .select__indicator svg {
+    @apply text-destructive-700;
+  }
+
+}
