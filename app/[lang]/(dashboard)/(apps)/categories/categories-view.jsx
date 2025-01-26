@@ -34,7 +34,6 @@ const CategoriesView = ({ categories, location }) => {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [sorting, setSorting] = React.useState([]);
   const openCreateCategory = () => {
-    console.log('open:', open);
     setOpen(true);
   };
   const closeCreateCategory = () => {

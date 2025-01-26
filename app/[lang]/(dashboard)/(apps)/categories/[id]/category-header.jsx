@@ -36,7 +36,6 @@ const CategoryHeader = ({ category, boards }) => {
   const [isDark, setIsDark] = useState(false);
   useEffect(() => {
     setIsDark(isColorDark(category.color));
-    console.log(isColorDark(category.color));
   }, [category.color]);
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);

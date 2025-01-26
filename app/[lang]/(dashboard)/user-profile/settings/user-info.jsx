@@ -14,7 +14,6 @@ const dateConverion = (stringDate) => {
 };
 const UserInfo = () => {
   const { user } = useUser();
-  console.log('user is ::', user);
   const createdAt = dateConverion(user?.createdAt);
   const updatedAt = dateConverion(user?.updatedAt);
   const userInfo = [

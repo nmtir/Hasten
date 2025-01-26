@@ -1,14 +1,12 @@
-"use server";
+'use server';
 import { api } from 'config/axios.config';
 import { revalidateDynamicPath } from 'config/axios.config';
 import { handleApiError } from 'config/axios.config';
-
 
 export const registerUser = async (data) => {
   console.log('registerUser req:', data);
   try {
     const response = await api.post('/auth/email/register', data);
-    console.log('registerUser res:', response.data);
     return response.data;
   } catch (error) {
     console.log('Error!!', error);
@@ -21,8 +19,6 @@ export const signInUser = async (provider, data) => {
     case 'email':
       try {
         const response = await api.post('/auth/email/login', data);
-        console.log('signInUser email res:', response.data);
-        console.log('ok');
         return response.data;
       } catch (error) {
         throw handleApiError(error);
@@ -30,8 +26,6 @@ export const signInUser = async (provider, data) => {
     case 'google':
       try {
         const response = await api.post('/auth/google/login', data);
-        console.log('signInUser google res:', response.data);
-        console.log('ok');
         return response.data;
       } catch (error) {
         throw handleApiError(error);
@@ -39,7 +33,6 @@ export const signInUser = async (provider, data) => {
     case 'facebook':
       try {
         const response = await api.post('/auth/facebook/login', data);
-        console.log('signInUser facebook res:', response.data);
         console.log('ok');
         return response.data;
       } catch (error) {

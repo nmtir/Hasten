@@ -26,7 +26,6 @@ const imageLoader = ({ src }) => {
 };
 const UserMeta = () => {
   const { user, updateUser } = useUser();
-  console.log('///////////////////////////', user, '//////////////////////');
 
   const token = Cookies.get('token');
   const [open, setOpen] = useState(false);

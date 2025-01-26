@@ -38,7 +38,6 @@ const PersonalDetails = () => {
           const r = await updateUserAction(data, token);
           const { token: newToken } = r;
           Cookies.set('token', newToken, { expires: 1 });
-          console.log(r);
           updateUser();
           toast.success(
             'Profile updated successfully! check your new email for verification!',
@@ -61,7 +60,6 @@ const PersonalDetails = () => {
           const { token: newToken } = r;
           Cookies.set('token', newToken, { expires: 1 });
           updateUser();
-          console.log(r);
           toast.success('Profile updated successfully!');
           setOpen(false);
         } catch (error) {

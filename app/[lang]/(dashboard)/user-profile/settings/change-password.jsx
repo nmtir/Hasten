@@ -78,7 +78,6 @@ const ChangePassword = () => {
         const r = await updateUserAction(data, token);
         const { token: newToken } = r;
         Cookies.set('token', newToken, { expires: 1 });
-        console.log(r);
         updateUser();
         toast.success('Password updated successfully!');
         setOpen(false);
