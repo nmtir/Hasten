@@ -88,7 +88,7 @@ const ProfileInfo = () => {
             )}
             <div>
               <div className="text-sm font-medium text-default-800 capitalize">
-                {user?.name ?? 'foulen'} {user?.username ?? 'ben foulen'}
+                {user?.name} {user?.username}
               </div>
             </div>
           </Link>
