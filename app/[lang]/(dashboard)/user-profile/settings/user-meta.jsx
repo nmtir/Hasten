@@ -61,8 +61,8 @@ const UserMeta = () => {
     startTransition(async () => {
       try {
         const r = await updateUserImage(user.id, formData, token);
-        const { token } = r;
-        Cookies.set('token', token, { expires: 1 });
+        const { token: newToken } = r;
+        Cookies.set('token', newToken, { expires: 1 });
         updateUser();
         toast.success('Profile image updated successfully');
         setIsUploading(false);
