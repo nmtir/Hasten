@@ -35,7 +35,7 @@ const ProfileInfo = () => {
         className=" cursor-pointer"
       >
         <div className="flex items-center">
-          {user.image ? (
+          {user?.image ? (
             <CldImage
               loader={imageLoader}
               src={user.image}

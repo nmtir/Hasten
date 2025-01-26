@@ -76,8 +76,8 @@ const ChangePassword = () => {
     startTransition(async () => {
       try {
         const r = await updateUserAction(data, token);
-        const { token } = r;
-        Cookies.set('token', token, { expires: 1 });
+        const { token: newToken } = r;
+        Cookies.set('token', newToken, { expires: 1 });
         console.log(r);
         updateUser();
         toast.success('Password updated successfully!');
