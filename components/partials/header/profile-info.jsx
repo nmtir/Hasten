@@ -66,7 +66,7 @@ const ProfileInfo = () => {
             className="flex items-center gap-2 text-sm font-medium text-default-600 capitalize my-1 px-3"
             href="/user-profile"
           >
-            {user.image ? (
+            {user?.image ? (
               <CldImage
                 loader={imageLoader}
                 src={user.image}
