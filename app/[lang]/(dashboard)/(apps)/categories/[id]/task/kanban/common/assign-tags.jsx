@@ -20,8 +20,12 @@ import { CustomPopover } from 'components/ui/popover';
 import { Badge } from 'components/ui/badge';
 import { Icon } from '@iconify/react';
 import { isColorDark } from 'components/common/common';
+import { useUser } from '../../../../../../../../../provider/userProvider';
+import { usePathname } from 'next/navigation';
 
-const AssignTags = ({ onEdit, user, tags, task, taskId, isNew }) => {
+const AssignTags = ({ onEdit, tags, task, taskId, isNew }) => {
+  const { user } = useUser();
+  const location = usePathname();
   const [open, setOpen] = useState(false);
   const taskTags = tags.filter((tag) => task?.tags.includes(tag.id));
   const [selectedValues, setSelectedValues] = useState(taskTags || []);
@@ -43,7 +47,7 @@ const AssignTags = ({ onEdit, user, tags, task, taskId, isNew }) => {
     if (!isNew) {
       startTransition(async () => {
         try {
-          const r = await updateTaskTag(taskId, tag.id);
+          const r = await updateTaskTag(taskId, tag.id, location);
           setSelectedValues(r);
         } catch (error) {
           console.log(error);
@@ -77,7 +81,7 @@ const AssignTags = ({ onEdit, user, tags, task, taskId, isNew }) => {
   const handleDelete = (tag) => {
     startTransition(async () => {
       try {
-        await deleteTag(tag.id);
+        await deleteTag(tag.id, location);
         toggleOpenTagColor();
         setNewTagName('');
         setNewTagColor('#2196F3');
@@ -97,7 +101,7 @@ const AssignTags = ({ onEdit, user, tags, task, taskId, isNew }) => {
       case 'Create':
         startTransition(async () => {
           try {
-            await addTaskTag(newTag, user.id);
+            await addTaskTag(newTag, user.id, location);
             toggleOpenTagColor();
             setNewTagName('');
             setNewTagColor('#2196F3');
@@ -109,7 +113,7 @@ const AssignTags = ({ onEdit, user, tags, task, taskId, isNew }) => {
       case 'Edit':
         startTransition(async () => {
           try {
-            await editTag(newTag, newTagId);
+            await editTag(newTag, newTagId, location);
             toggleOpenTagColor();
             setNewTagId('');
             setNewTagName('');

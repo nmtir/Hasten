@@ -1,19 +1,15 @@
-"use client";
-import { ChevronDown } from "lucide-react";
-import React, { lazy, Suspense, useContext, useState } from "react";
-import { Progress } from "components/ui/progress";
-import {
-  Collapsible,
-  CollapsibleContent,
+'use client';
+import { ChevronDown } from 'lucide-react';
+import React, { lazy, Suspense, useContext, useState } from 'react';
+import { Progress } from 'components/ui/progress';
+import { Collapsible, CollapsibleContent } from 'components/ui/collapsible';
+import TaskItem from './task-item';
+import AddSubTask from './add-sub-task';
+import { PathContext } from 'provider/providers';
 
-} from "components/ui/collapsible";
-import TaskItem from "./task-item";
-import AddSubTask from "./add-sub-task";
-import { PathContext } from "provider/providers";
+const LazyTaskSheet = lazy(() => import('../index'));
 
-const LazyTaskSheet = lazy(() => import("../index"));
-
-const SubTasks = ({ subtasks, taskId, boards, priorities }) => {
+const SubTasks = ({ fetch, task, subtasks, taskId, boards, priorities }) => {
   const [showComplete, setShowComplete] = useState(false);
   const [loadTaskSheet, setLoadTaskSheet] = useState(false);
 
@@ -22,7 +18,7 @@ const SubTasks = ({ subtasks, taskId, boards, priorities }) => {
     setLoadTaskSheet(value);
   };
   const completedSubtasks = subtasks.filter(
-    (taskItem) => taskItem.completed === true
+    (taskItem) => taskItem.completed === true,
   );
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -30,14 +26,14 @@ const SubTasks = ({ subtasks, taskId, boards, priorities }) => {
   const handleShowCompleteTask = () => setShowComplete(!showComplete);
   const [open, setOpen] = useState(false);
   const addNewTaskToPath = (taskName) => {
-    setTaskPath(prevPath => [...prevPath, taskName]);
+    setTaskPath((prevPath) => [...prevPath, taskName]);
   };
   const removeLastTaskFromPath = () => {
-    setTaskPath(prevPath => prevPath.slice(0, -1));
+    setTaskPath((prevPath) => prevPath.slice(0, -1));
   };
   const handleOpenSubTaskSheet = (task) => {
     addNewTaskToPath(task.title);
-    console.log("added!:")
+    console.log('added!:');
     setSelectedTaskId(task.id);
     setSelectedTask(task);
     setOpen(true);
@@ -81,20 +77,20 @@ const SubTasks = ({ subtasks, taskId, boards, priorities }) => {
           {subtasks
             .filter((taskItem) => !taskItem.completed)
             .map((subtask) => (
-
               <TaskItem
+                fetch={fetch}
                 subtask={subtask}
                 key={`task-item-key-${subtask.id}`}
                 handlerSubSheet={handleOpenSubTaskSheet}
               />
             ))}
         </div>
-        <AddSubTask taskId={taskId} />
+        <AddSubTask fetch={fetch} task={task} taskId={taskId} />
         <div
           className="px-6 py-4 cursor-pointer text-xs font-medium text-default-500 flex items-center gap-1"
           onClick={handleShowCompleteTask}
         >
-          {completedSubtasks.length} Completed Subtask{" "}
+          {completedSubtasks.length} Completed Subtask{' '}
           <ChevronDown className="w-4 h-4" />
         </div>
 
@@ -113,7 +109,6 @@ const SubTasks = ({ subtasks, taskId, boards, priorities }) => {
       {loadTaskSheet && selectedTask != null && (
         <Suspense fallback={<div>Loading...</div>}>
           <LazyTaskSheet
-
             open={open}
             onClose={handleCloseSubtaskSheet}
             task={selectedTask}

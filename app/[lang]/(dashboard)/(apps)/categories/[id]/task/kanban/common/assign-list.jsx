@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from 'components/ui/command';
 import CreateBoard from '../create-board';
 import { cn } from 'lib/utils';
@@ -25,6 +26,8 @@ import DeleteConfirmationDialog from 'components/delete-confirmation-dialog';
 import { Badge } from 'components/ui/badge';
 import { isColorDark } from 'components/common/common';
 import { wait } from 'components/common/common';
+import { useUser } from '../../../../../../../../../provider/userProvider';
+import { usePathname } from 'next/navigation';
 const AssignList = ({
   onEdit,
   categoryId,
@@ -33,6 +36,8 @@ const AssignList = ({
   task,
   isNew,
 }) => {
+  const { user } = useUser();
+  const location = usePathname();
   const { taskPath } = useContext(PathContext);
   const { setTaskPath } = useContext(PathContext);
   const [board, setBoard] = useState(null);
@@ -71,7 +76,7 @@ const AssignList = ({
       const target = board.name;
       startTransition(async () => {
         try {
-          const r = await updateTaskBoard(task.id, b.id);
+          const r = await updateTaskBoard(task.id, b.id, location);
           setBoard(r);
           const replacement = b.name;
           const newPath = taskPath.map((item) =>
@@ -96,7 +101,7 @@ const AssignList = ({
   const handleDelete = (b) => {
     startTransition(async () => {
       try {
-        await deleteBoard(b);
+        await deleteBoard(b, location);
         setDeleteId(null);
         setNewBoardName('');
         setNewBoardColor('#2196F3');
@@ -116,7 +121,7 @@ const AssignList = ({
       case 'Create':
         startTransition(async () => {
           try {
-            await createCategoryBoard(newBoard, categoryId);
+            await createCategoryBoard(newBoard, categoryId, location);
             toggleOpen(setOpenBoardColor, openBoardColor);
             setNewBoardName('');
             setNewBoardColor('#2196F3');
@@ -129,7 +134,7 @@ const AssignList = ({
       case 'Edit':
         startTransition(async () => {
           try {
-            await updateBoard(editBoardId, newBoard);
+            await updateBoard(editBoardId, newBoard, location);
             toggleOpen(setOpenBoardColor, openBoardColor);
             setEditBoardId('');
             setNewBoardName('');
@@ -203,62 +208,60 @@ const AssignList = ({
   };
   const SecondPart = () => {
     return (
-      <>
+      <div>
         <Command className="p-0">
           <CommandInput placeholder="Search boards..."></CommandInput>
           <CommandEmpty>No Item found</CommandEmpty>
           <CommandGroup className="max-h-48 overflow-y-auto no-scrollbar">
-            {boards.map((item, index) => {
-              return (
-                <CommandItem
-                  onSelect={() => handleSelect(item)}
-                  key={`assigned-list-item-${index}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      <Check
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          board?.id === item.id ? 'opacity-100' : 'opacity-0',
-                        )}
-                      />
-                      <div>{item.name}</div>
-                    </div>
+            {boards.map((item, index) => (
+              <CommandItem
+                onSelect={() => handleSelect(item)}
+                key={`assigned-list-item-${index}`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        board?.id === item.id ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    <div>{item.name}</div>
+                  </div>
 
-                    <div className="flex items-center">
-                      <div
-                        style={{
-                          backgroundColor: item.color,
-                          width: '12px',
-                          height: '12px',
-                          borderRadius: '4px',
-                          marginLeft: '8px',
+                  <div className="flex items-center">
+                    <div
+                      style={{
+                        backgroundColor: item.color,
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '4px',
+                        marginLeft: '8px',
+                      }}
+                    />
+                    <div className="ml-2 flex items-center space-x-2">
+                      <Icon
+                        icon="heroicons:pencil"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenEdit(item);
                         }}
+                        className="w-5 h-5 text-transparent hover:text-blue-400"
                       />
-                      <div className="ml-2 flex items-center space-x-2">
-                        <Icon
-                          icon="heroicons:pencil"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenEdit(item);
-                          }}
-                          className="w-5 h-5 text-transparent hover:text-blue-400"
-                        />
-                        <Icon
-                          icon="heroicons:trash"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleteId(item.id);
-                            setOpenDelete(true);
-                          }}
-                          className="w-5 h-5 text-transparent hover:text-red-400"
-                        />
-                      </div>
+                      <Icon
+                        icon="heroicons:trash"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteId(item.id);
+                          setOpenDelete(true);
+                        }}
+                        className="w-5 h-5 text-transparent hover:text-red-400"
+                      />
                     </div>
                   </div>
-                </CommandItem>
-              );
-            })}
+                </div>
+              </CommandItem>
+            ))}
           </CommandGroup>
         </Command>
         <Button
@@ -273,7 +276,7 @@ const AssignList = ({
         >
           Create Board
         </Button>
-      </>
+      </div>
     );
   };
 

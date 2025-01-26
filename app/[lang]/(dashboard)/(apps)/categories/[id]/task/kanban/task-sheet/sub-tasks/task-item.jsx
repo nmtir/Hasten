@@ -23,8 +23,9 @@ import {
   DropdownMenuTrigger,
 } from 'components/ui/dropdown-menu';
 import DeleteConfirmationDialog from 'components/delete-confirmation-dialog';
-
-const TaskItem = ({ subtask, handlerSubSheet }) => {
+import { usePathname } from 'next/navigation';
+const TaskItem = ({ fetch, subtask, handlerSubSheet }) => {
+  const location = usePathname();
   const { completed, assignDate, id } = subtask;
   const [isDone, setIsDone] = React.useState(completed);
   // update isComplete
@@ -37,8 +38,9 @@ const TaskItem = ({ subtask, handlerSubSheet }) => {
     };
     startTransition(async () => {
       try {
-        await updateSubTask(id, newData);
+        await updateSubTask(id, newData, location);
         setIsDone(!isDone);
+        await fetch();
       } catch (error) {
         console.log(error);
       }
@@ -48,7 +50,8 @@ const TaskItem = ({ subtask, handlerSubSheet }) => {
   const onAction = (dltId) => {
     startTransition(async () => {
       try {
-        await deleteSubTask(dltId);
+        await deleteSubTask(dltId, location);
+        await fetch();
       } catch (error) {
         console.log(error);
       }
@@ -91,33 +94,6 @@ const TaskItem = ({ subtask, handlerSubSheet }) => {
               {subtask?.title}
             </div>
             <div className="flex-none flex items-center gap-2">
-              {/* assigned members */}
-              {subtask?.assign?.length > 0 && (
-                <div>
-                  <AvatarGroup
-                    max={3}
-                    total={subtask.assign.length}
-                    countClass="w-7 h-7"
-                  >
-                    {subtask.assign?.map((user, i) => (
-                      <Avatar
-                        className=" ring-1 ring-background ring-offset-[2px]  ring-offset-background h-7 w-7"
-                        key={`avatar-key-${i}`}
-                      >
-                        <AvatarImage src={user.image} />
-                        <AvatarFallback>AB</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </AvatarGroup>
-                </div>
-              )}
-              {/* add new members start*/}
-              <div onClick={(e) => e.stopPropagation()}>
-                <AssignMembers />
-              </div>
-
-              {/* add new members end*/}
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -133,31 +109,6 @@ const TaskItem = ({ subtask, handlerSubSheet }) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-fit" align="end">
-                  {!completed && (
-                    <>
-                      <DropdownMenuItem className="gap-2">
-                        <Icon
-                          icon="heroicons:calendar"
-                          className="w-4 h-4 text-default-500"
-                        />
-                        Add a due date
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="gap-2">
-                        <Tag className="w-4 h-4 text-default-500" />
-                        Manage Tags
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="gap-2">
-                        <Check className="w-4 h-4 text-default-500" />
-                        Convert to a task
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2">
-                        <ArrowRightLeft className="w-4 h-4 text-default-500" />
-                        Move into another task
-                      </DropdownMenuItem>
-                    </>
-                  )}
                   <DropdownMenuItem
                     className="gap-2 hover:bg-destructive hover:text-destructive-foreground group"
                     onClick={(e) => {

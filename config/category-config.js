@@ -229,7 +229,7 @@ export const addTaskTag = async (tag, userId, fetchPath) => {
 export const createSubTask = async (subtask, fetchPath) => {
   console.log('createSubTask req data:', subtask);
   try {
-    const response = await api.post('/tasks/subtasks', subtask);
+    const response = await api.post('/tasks/add', subtask);
     console.log('createSubTask res data:', response.data);
     if (fetchPath) revalidatePath(fetchPath);
     return response.data;
@@ -251,7 +251,7 @@ export const createTask = async (task, fetchPath) => {
 export const deleteSubTask = async (id, fetchPath) => {
   console.log('deleteSubTask req data:', id);
   try {
-    const response = await api.delete(`/tasks/subtasks/${id}`);
+    const response = await api.delete(`/tasks/${id}`);
     console.log('deleteSubTask res data:', response.data);
     if (fetchPath) revalidatePath(fetchPath);
   } catch (error) {
@@ -267,10 +267,7 @@ export const updateSubTask = async (subtaskId, updatedFields, fetchPath) => {
     updatedFields,
   );
   try {
-    const response = await api.put(
-      `/tasks/subtasks/${subtaskId}`,
-      updatedFields,
-    );
+    const response = await api.put(`tasks/edit/${subtaskId}`, updatedFields);
     console.log('updateSubTask res data:', response.data);
     if (fetchPath) revalidatePath(fetchPath);
     return response.data;

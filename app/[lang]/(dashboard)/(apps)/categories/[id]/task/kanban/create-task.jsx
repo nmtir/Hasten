@@ -121,7 +121,7 @@ const CreateTask = ({
       case 'dueTime':
         setDueTime(d);
         break;
-      case 'Date':
+      case 'date':
         setStartDate(d.start);
         setDueDate(d.end);
         break;

@@ -36,6 +36,37 @@ const CurrentTimeContext = createContext();
 export const useCurrentTime = () => useContext(CurrentTimeContext);
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 const LazyTaskSheet = lazy(() => import('./task-sheet'));
+const filterTasks = (
+  tasks,
+  selectedTags,
+  selectedPriorities,
+  selectedStartDate,
+  selectedEndDate,
+) => {
+  return tasks.filter((task) => {
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.some((tag) => task.tags.some((t) => t === tag.id));
+
+    const matchesPriorities =
+      selectedPriorities.length === 0 ||
+      selectedPriorities.some((p) => p.id === task.priorityId);
+
+    const matchesDateRange =
+      (!selectedStartDate && !selectedEndDate) || // No filter
+      (!task.end &&
+        !selectedEndDate &&
+        new Date(task.start) >= new Date(selectedStartDate)) || // Open-ended tasks
+      (task.end &&
+        selectedStartDate &&
+        selectedEndDate &&
+        new Date(task.end) >= new Date(selectedStartDate) &&
+        new Date(task.start) <= new Date(selectedEndDate));
+
+    return matchesTags && matchesPriorities && matchesDateRange;
+  });
+};
+
 const Kanban = ({
   tags,
   categoryId,
@@ -54,6 +85,10 @@ const Kanban = ({
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedPriorities, setSelectedPriorities] = useState([]);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [taskView, setTaskView] = useState('Boards');
   const { setTaskPath } = useContext(PathContext);
   const location = usePathname();
@@ -133,7 +168,16 @@ const Kanban = ({
 
   const filteredTasks = (tasks, boardId) => {
     // Add your filtering logic here
-    return tasks?.filter((task) => task.boardId === boardId);
+    const boardFilteredTasks = tasks?.filter(
+      (task) => task.boardId === boardId,
+    );
+    return filterTasks(
+      boardFilteredTasks,
+      selectedTags,
+      selectedPriorities,
+      selectedStartDate,
+      selectedEndDate,
+    );
   };
   const [targetBoard, setTargetBoard] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
@@ -196,6 +240,16 @@ const Kanban = ({
               taskView={taskView}
               taskViewHandler={taskViewHandler}
               openCreateBoard={openCreateBoard}
+              priorities={priorities}
+              tags={tags}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+              selectedPriorities={selectedPriorities}
+              setSelectedPriorities={setSelectedPriorities}
+              selectedStartDate={selectedStartDate}
+              setSelectedStartDate={setSelectedStartDate}
+              selectedEndDate={selectedEndDate}
+              setSelectedEndDate={setSelectedEndDate}
             />
           </CardHeader>
           <CardContent>

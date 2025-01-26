@@ -115,6 +115,7 @@ const selectVariants = cva(
 );
 
 const Select = SelectPrimitive.Root;
+const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
@@ -227,4 +228,5 @@ export {
   SelectLabel,
   SelectItem,
   SelectSeparator,
+  SelectGroup,
 };

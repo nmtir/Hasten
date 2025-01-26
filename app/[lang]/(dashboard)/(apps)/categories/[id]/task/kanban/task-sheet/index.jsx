@@ -32,19 +32,18 @@ const TaskSheet = ({
   boards,
   priorities,
 }) => {
+  const fetchSubtasks = async () => {
+    try {
+      const response = await fetch(`/api/subtasks?taskId=${taskId}`);
+      const data = await response.json();
+      console.log('data', data);
+      setSubtasks(data);
+    } catch (error) {
+      console.log('Error fetching subtasks!!!', error);
+    }
+  };
   const [subtasks, setSubtasks] = useState([]);
   useEffect(() => {
-    const fetchSubtasks = async () => {
-      try {
-        const response = await fetch(`/api/subtasks?taskId=${taskId}`);
-        const data = await response.json();
-        console.log('data', data);
-        setSubtasks(data);
-      } catch (error) {
-        console.log('Error fetching subtasks!!!', error);
-      }
-    };
-
     fetchSubtasks().then((r) => console.log(r));
   }, [task]);
   const [collapseSheet, setCollapseSheet] = useState(false);
@@ -105,14 +104,14 @@ const TaskSheet = ({
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="subtasks">
-                  {Array.isArray(subtasks) && subtasks.length > 0 && (
-                    <SubTasks
-                      priorities={priorities}
-                      subtasks={subtasks}
-                      taskId={taskId}
-                      boards={boards}
-                    />
-                  )}
+                  <SubTasks
+                    priorities={priorities}
+                    subtasks={subtasks ? subtasks : []}
+                    taskId={taskId}
+                    task={task}
+                    boards={boards}
+                    fetch={fetchSubtasks}
+                  />
                 </TabsContent>
               </Tabs>
             </ScrollArea>

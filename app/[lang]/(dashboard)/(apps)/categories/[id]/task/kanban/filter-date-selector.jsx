@@ -23,7 +23,7 @@ import {
 
 import { X } from 'lucide-react';
 import { Label } from 'components/ui/label';
-import { VisuallyHidden } from '@nextui-org/react';
+import { DatePicker, VisuallyHidden } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import {
   Select,
@@ -38,62 +38,59 @@ import { Icon } from '@iconify/react';
 import { defaultFunctions } from 'components/common/common';
 import NewTaskDatePicker from 'components/NewTaskDatePicker';
 import { parseAbsoluteToLocal } from '@internationalized/date';
+import TaskRangePicker from 'components/TaskRangePicker';
+import TaskTimePicker from 'components/TaskTimePicker';
 
-const ConfirmDrag = ({ targetBoard, prevBoard, task, open, setOpen }) => {
+const FilterDateSelector = ({
+  dateSelector,
+  setEnd,
+  setStart,
+  open,
+  setOpen,
+}) => {
   const location = usePathname();
-  const [startDate, setStartDate] = useState(
+
+  const [endDate, setEndDate] = useState(
     parseAbsoluteToLocal(new Date().toISOString()),
   );
-  const [dueDate, setDueDate] = useState(
+  const [endTime, setEndTime] = useState(
+    parseAbsoluteToLocal(new Date().toISOString()),
+  );
+  const [startDate, setStartDate] = useState(
     parseAbsoluteToLocal(new Date().toISOString()),
   );
   const [startTime, setStartTime] = useState(
     parseAbsoluteToLocal(new Date().toISOString()),
   );
-  const [dueTime, setDueTime] = useState(
-    parseAbsoluteToLocal(new Date().toISOString()),
-  );
 
   const onSubmit = () => {
-    const end = new Date(
-      dueDate.year,
-      dueDate.month - 1,
-      dueDate.day,
-      dueTime.hour,
-      dueTime.minute,
-    );
-    const start = new Date(
+    const startDateTime = new Date(
       startDate.year,
       startDate.month - 1,
       startDate.day,
       startTime.hour,
       startTime.minute,
     );
-
-    const updatedData = {
-      ...task,
-      boardId: targetBoard.id,
-      start: start,
-      end: end,
-    };
-    startTransition(async () => {
-      try {
-        await updateTask(task.id, updatedData, location);
-      } catch (error) {
-        console.log(error);
-      }
-    });
-    setDueDate(parseAbsoluteToLocal(new Date().toISOString()));
-    setStartTime(parseAbsoluteToLocal(new Date().toISOString()));
+    const endDateTime = new Date(
+      endDate.year,
+      endDate.month - 1,
+      endDate.day,
+      endTime.hour,
+      endTime.minute,
+    );
+    setStart(startDateTime);
+    setEnd(endDateTime);
     setStartDate(parseAbsoluteToLocal(new Date().toISOString()));
-    setDueTime(parseAbsoluteToLocal(new Date().toISOString()));
+    setStartTime(parseAbsoluteToLocal(new Date().toISOString()));
+    setEndDate(parseAbsoluteToLocal(new Date().toISOString()));
+    setEndTime(parseAbsoluteToLocal(new Date().toISOString()));
     onCloseDialog();
   };
   const onCloseDialog = () => {
-    setDueDate(parseAbsoluteToLocal(new Date().toISOString()));
-    setStartTime(parseAbsoluteToLocal(new Date().toISOString()));
     setStartDate(parseAbsoluteToLocal(new Date().toISOString()));
-    setDueTime(parseAbsoluteToLocal(new Date().toISOString()));
+    setStartTime(parseAbsoluteToLocal(new Date().toISOString()));
+    setEndDate(parseAbsoluteToLocal(new Date().toISOString()));
+    setEndTime(parseAbsoluteToLocal(new Date().toISOString()));
     setOpen(false);
   };
   const onDateChange = (d, value) => {
@@ -101,20 +98,31 @@ const ConfirmDrag = ({ targetBoard, prevBoard, task, open, setOpen }) => {
       case 'startTime':
         setStartTime(d);
         break;
-      case 'dueTime':
-        setDueTime(d);
+      case 'endTime':
+        setEndTime(d);
         break;
       case 'date':
         setStartDate(d.start);
-        setDueDate(d.end);
+        setEndDate(d.end);
         break;
     }
+  };
+  const onEditStartTime = (t) => {
+    onDateChange(t, 'startTime');
+  };
+  const onEditEndTime = (t) => {
+    onDateChange(t, 'endTime');
+  };
+  const onEditDate = (t) => {
+    onDateChange(t, 'date');
   };
   return (
     <Dialog open={open} onOpenChange={onCloseDialog}>
       <DialogContent hiddenCloseIcon>
         <DialogHeader className="flex-row justify-between items-center py-0 ">
-          <DialogTitle className="text-default-900">Are You Sure?</DialogTitle>
+          <DialogTitle className="text-default-900">
+            Choose Date Filter Range
+          </DialogTitle>
           <DialogClose asChild>
             <div
               type="button"
@@ -125,19 +133,33 @@ const ConfirmDrag = ({ targetBoard, prevBoard, task, open, setOpen }) => {
             </div>
           </DialogClose>
         </DialogHeader>
-        <DialogDescription>
-          This Task Is Marked As {prevBoard?.function}, If You Really Want To
-          Restore It You Must Reschedule It.
-        </DialogDescription>
-
+        <VisuallyHidden>
+          <DialogDescription></DialogDescription>
+        </VisuallyHidden>
         <div className="py-0 pl-1 -mt-2">
-          <NewTaskDatePicker
-            onEdit={onDateChange}
-            startDate={startDate}
-            dueDate={dueDate}
-            startTime={startTime}
-            dueTime={dueTime}
-          />
+          <div>
+            <div className="w-full max-w-xl flex flex-row gap-4">
+              <TaskRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onEditDate={onEditDate}
+              />
+            </div>
+            <div className="flex flex-row gap-4 mt-2">
+              <TaskTimePicker
+                Time={startTime}
+                onEditTime={onEditStartTime}
+                label={'Starting :'}
+              />
+            </div>
+            <div className="flex flex-row gap-4 mt-2">
+              <TaskTimePicker
+                Time={endTime}
+                onEditTime={onEditEndTime}
+                label={'Ends:'}
+              />
+            </div>
+          </div>
         </div>
         <div className="flex justify-center gap-4">
           <DialogClose asChild>
@@ -159,4 +181,4 @@ const ConfirmDrag = ({ targetBoard, prevBoard, task, open, setOpen }) => {
   );
 };
 
-export default ConfirmDrag;
+export default FilterDateSelector;

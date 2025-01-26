@@ -25,8 +25,12 @@ import DeleteConfirmationDialog from 'components/delete-confirmation-dialog';
 import { Badge } from 'components/ui/badge';
 import { isColorDark } from 'components/common/common';
 import { wait } from 'components/common/common';
+import { usePathname } from 'next/navigation';
+import { useUser } from 'provider/userProvider';
 
-const Priority = ({ priorities, task, isNew, onEdit, user }) => {
+const Priority = ({ priorities, task, isNew, onEdit }) => {
+  const { user } = useUser();
+  const location = usePathname();
   const [priority, setPriority] = useState(null);
   const [openPriorityColor, setOpenPriorityColor] = useState(false);
   const [editPriorityId, setEditPriorityId] = useState('');
@@ -69,7 +73,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
     } else {
       startTransition(async () => {
         try {
-          const r = await updateTaskPriority(task.id, p.id);
+          const r = await updateTaskPriority(task.id, p.id, location);
           setPriority(r);
         } catch (error) {
           console.log(error);
@@ -90,7 +94,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
   const handleDelete = (p) => {
     startTransition(async () => {
       try {
-        await deletePriority(p);
+        await deletePriority(p, location);
         setDeleteId(null);
         setNewPriorityName('');
         setNewPriorityColor('#2196F3');
@@ -102,7 +106,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
 
   const handlePrioritySubmission = (e) => {
     e.preventDefault();
-    const userId = isNew ? user.id : priority.userId;
+    const userId = user.id;
     const newPriority = {
       name: newPriorityName,
       color: newPriorityColor,
@@ -111,7 +115,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
       case 'Create':
         startTransition(async () => {
           try {
-            await createUserPriority(newPriority, userId);
+            await createUserPriority(newPriority, userId, location);
             toggleOpenPriorityColor();
             setNewPriorityName('');
             setNewPriorityColor('#2196F3');
@@ -124,7 +128,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
       case 'Edit':
         startTransition(async () => {
           try {
-            await updatePriority(editPriorityId, newPriority);
+            await updatePriority(editPriorityId, newPriority, location);
             toggleOpenPriorityColor();
             setEditPriorityId('');
             setNewPriorityName('');
@@ -175,7 +179,6 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
               className="p-0 border-none rounded-md"
               value={newPriorityColor}
               onChange={(e) => setNewPriorityColor(e.target.value)}
-              defaultValue="#6338f0"
             />
             <div className="flex gap-4 mt-4">
               <Button
@@ -197,7 +200,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
   };
   const SecondPart = () => {
     return (
-      <>
+      <div>
         <Command className="p-0">
           <CommandInput placeholder="Search priorities..."></CommandInput>
           <CommandEmpty>No Item found</CommandEmpty>
@@ -269,12 +272,12 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
         >
           Create Priority
         </Button>
-      </>
+      </div>
     );
   };
   if (!isNew) {
     return (
-      <>
+      <div>
         {' '}
         <CustomPopover
           trigger={
@@ -318,7 +321,7 @@ const Priority = ({ priorities, task, isNew, onEdit, user }) => {
           }}
           onConfirm={() => handleDelete(deleteId)}
         />
-      </>
+      </div>
     );
   } else {
     return (

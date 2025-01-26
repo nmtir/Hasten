@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { startTransition } from 'react';
 import { Label } from 'components/ui/label';
 import { Input } from 'components/ui/input';
 import { Plus } from 'lucide-react';
@@ -9,11 +9,12 @@ import { useForm } from 'react-hook-form';
 import { cn, formatDate } from 'lib/utils';
 import { toast } from 'react-hot-toast';
 import { createSubTask } from 'config/category-config';
+import { usePathname } from 'next/navigation';
 const schema = z.object({
   title: z.string().min(2, { message: 'title' }),
 });
-const AddSubTask = ({ taskId }) => {
-  const [startTransition] = React.useTransition();
+const AddSubTask = ({ fetch, task, taskId }) => {
+  const location = usePathname();
   const {
     register,
     handleSubmit,
@@ -23,13 +24,15 @@ const AddSubTask = ({ taskId }) => {
     resolver: zodResolver(schema),
   });
   const onSubmit = (data) => {
-    data.assignDate = formatDate(new Date());
+    data.start = task.start;
+    data.end = task.end;
     data.completed = false;
     data.taskId = taskId;
     startTransition(async () => {
       try {
-        await createSubTask(data);
+        await createSubTask(data, location);
         toast.success('Successfully added');
+        await fetch();
       } catch (error) {
         console.log(error);
       }
