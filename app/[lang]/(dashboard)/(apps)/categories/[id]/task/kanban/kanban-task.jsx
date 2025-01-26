@@ -186,13 +186,6 @@ const KanbanTask = ({ task, onUpdateTask, boards }) => {
                     </DropdownMenuTrigger>
                     <DropdownMenuPortal>
                       <DropdownMenuContent className="w-[196px]" align="start">
-                        <DropdownMenuItem onSelect={() => setOpen(true)}>
-                          <Icon
-                            icon="line-md:edit-twotone"
-                            className="w-4 h-4 mr-3"
-                          />
-                          Edit
-                        </DropdownMenuItem>
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger>
                             <Icon
