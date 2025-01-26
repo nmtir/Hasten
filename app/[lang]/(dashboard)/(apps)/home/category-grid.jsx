@@ -16,6 +16,7 @@ import DeleteConfirmationDialog from 'components/delete-confirmation-dialog';
 
 import { VisuallyHidden } from '@nextui-org/react';
 import { isColorDark } from 'components/common/common';
+import { usePathname } from 'next/navigation';
 
 const CategoryGrid = ({
   category,
@@ -23,11 +24,11 @@ const CategoryGrid = ({
   openCreateCategory,
 }) => {
   const [open, setOpen] = React.useState(false);
-
+  const location = usePathname();
   function onAction(id) {
     startTransition(async () => {
       try {
-        await deleteCategory(id);
+        await deleteCategory(id, location);
       } catch (error) {
         console.log(error);
       }

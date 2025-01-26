@@ -10,7 +10,7 @@ import {
 } from 'components/ui/dropdown-menu';
 import { isColorDark } from 'components/common/common';
 import { usePathname } from 'next/navigation';
-import { createCategoryBoard } from 'config/category-config';
+import { createCategoryBoard, deleteCategory } from 'config/category-config';
 import { toast } from 'react-hot-toast';
 import CreateCategory from '../../home/create-category';
 import DeleteConfirmationDialog from '../../../../../../components/delete-confirmation-dialog';
@@ -47,7 +47,7 @@ const CategoryHeader = ({ category, boards }) => {
   function onAction(id) {
     startTransition(async () => {
       try {
-        await deleteCategory(id);
+        await deleteCategory(id, location);
       } catch (error) {
         console.log(error);
       }
