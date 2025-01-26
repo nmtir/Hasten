@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Icon } from "@iconify/react";
-import Cookies from "js-cookie";
-import { useUser } from "provider/userProvider";
+import { Icon } from '@iconify/react';
+import Cookies from 'js-cookie';
+import { useUser } from 'provider/userProvider';
 
 const LogoutFooter = () => {
   const { user } = useUser();
   const handleSignOut = () => {
-    Cookies.remove("token");
-    window.location.href = "/auth/login";
+    Cookies.remove('token');
+    window.location.href = '/auth/login';
   };
 
   return (
@@ -16,10 +16,10 @@ const LogoutFooter = () => {
       <div className=" bg-default-50 dark:bg-default-200 items-center flex gap-3  px-4 py-2 mt-5">
         <div className="flex-1">
           <div className=" text-default-700 font-semibold text-sm capitalize mb-0.5 truncate">
-            {user.name ?? "Guest"}
+            {user?.name ?? 'Guest'}
           </div>
           <div className=" text-xs text-default-600  truncate">
-            {user.email ?? "No email available"}
+            {user?.email ?? 'No email available'}
           </div>
         </div>
         <div className=" flex-none">
