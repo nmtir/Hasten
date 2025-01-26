@@ -1,8 +1,7 @@
-import axios from "axios";
-import { revalidatePath } from "next/cache";
+import axios from 'axios';
+import { revalidatePath } from 'next/cache';
 
-
-const baseURL = process.env.NEXT_PUBLIC_SITE_URL + "/api/v1";
+const baseURL = process.env.NEXT_PUBLIC_SITE_URL + '/api';
 
 export const api = axios.create({
   baseURL,
